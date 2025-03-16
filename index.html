@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spanish Listening Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .question {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .audio-player {
+            margin: 10px 0;
+        }
+
+        .options {
+            margin: 15px 0;
+        }
+
+        .option {
+            display: block;
+            margin: 10px 0;
+            padding: 8px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            background-color: #e9e9e9;
+        }
+
+        #submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+        }
+
+        #submit-btn:hover {
+            background-color: #45a049;
+        }
+
+        #results {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .correct {
+            background-color: #d4edda !important;
+        }
+
+        .incorrect {
+            background-color: #f8d7da !important;
+        }
+
+        .play-audio-btn {
+            background-color: #008CBA;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+
+        .play-audio-btn:hover {
+            background-color: #005f7f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Spanish Listening Comprehension Test</h1>
+        <div id="quiz"></div>
+        <button id="submit-btn">Submit Answers</button>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                textToSpeak: "Hola, ¿puedes decirme cómo llegar a la plaza principal? Necesito ir al banco que está allí.",
+                question: "¿De qué trata la conversación?",
+                options: [
+                    "A) Una persona pidiendo direcciones",
+                    "B) Una entrevista de trabajo",
+                    "C) Una reserva en un restaurante",
+                    "D) Una consulta médica"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "Buenos días, hoy es viernes y tengo una reunión importante a las tres de la tarde.",
+                question: "¿Qué día de la semana se menciona?",
+                options: [
+                    "A) Lunes",
+                    "B) Miércoles",
+                    "C) Viernes",
+                    "D) Domingo"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Hace mucho sol hoy, pero mañana va a llover todo el día.",
+                question: "¿Qué tiempo hace hoy según el audio?",
+                options: [
+                    "A) Llueve",
+                    "B) Hace sol",
+                    "C) Hace viento",
+                    "D) Nieva"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy a la playa este fin de semana porque quiero nadar y tomar el sol.",
+                question: "¿A dónde va la persona?",
+                options: [
+                    "A) Al supermercado",
+                    "B) A la biblioteca",
+                    "C) Al cine",
+                    "D) A la playa"
+                ],
+                correctAnswer: 3
+            },
+            {
+                textToSpeak: "Quiero comprar dos kilos de manzanas y un kilo de naranjas en el mercado.",
+                question: "¿Qué quiere comprar la persona?",
+                options: [
+                    "A) Fruta",
+                    "B) Ropa",
+                    "C) Libros",
+                    "D) Boletos de avión"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "Me levanto a las siete de la mañana todos los días para ir al trabajo.",
+                question: "¿A qué hora se levanta la persona?",
+                options: [
+                    "A) Las 6:00",
+                    "B) Las 7:00",
+                    "C) Las 8:00",
+                    "D) Las 9:00"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "En mi casa, tengo dos perros y un gato. Son muy juguetones.",
+                question: "¿Cuántas mascotas tiene la persona?",
+                options: [
+                    "A) Una",
+                    "B) Dos",
+                    "C) Tres",
+                    "D) Cuatro"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Voy al cine esta noche para ver una película de comedia.",
+                question: "¿Qué tipo de película va a ver la persona?",
+                options: [
+                    "A) Acción",
+                    "B) Comedia",
+                    "C) Terror",
+                    "D) Drama"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Necesito un boleto de ida y vuelta a Madrid para el próximo lunes.",
+                question: "¿Qué tipo de boleto necesita la persona?",
+                options: [
+                    "A) Solo ida",
+                    "B) Ida y vuelta",
+                    "C) Solo vuelta",
+                    "D) Boleto mensual"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Mi color favorito es el azul porque es muy relajante.",
+                question: "¿Cuál es el color favorito de la persona?",
+                options: [
+                    "A) Rojo",
+                    "B) Verde",
+                    "C) Azul",
+                    "D) Amarillo"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "En el supermercado, compro pan, leche y huevos para el desayuno.",
+                question: "¿Qué compra la persona para el desayuno?",
+                options: [
+                    "A) Pan, leche y huevos",
+                    "B) Fruta y café",
+                    "C) Cereal y jugo",
+                    "D) Queso y jamón"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "Mi hermano tiene dieciocho años y estudia en la universidad.",
+                question: "¿Cuántos años tiene el hermano de la persona?",
+                options: [
+                    "A) Dieciséis",
+                    "B) Diecisiete",
+                    "C) Dieciocho",
+                    "D) Diecinueve"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Hoy es un día muy frío, así que voy a usar una chaqueta y una bufanda.",
+                question: "¿Qué ropa usa la persona por el frío?",
+                options: [
+                    "A) Camiseta y shorts",
+                    "B) Chaqueta y bufanda",
+                    "C) Vestido y sandalias",
+                    "D) Pantalones y gorra"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy a la biblioteca para estudiar porque es un lugar tranquilo.",
+                question: "¿Por qué va la persona a la biblioteca?",
+                options: [
+                    "A) Para leer novelas",
+                    "B) Para estudiar",
+                    "C) Para comprar libros",
+                    "D) Para ver películas"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "El tren a Barcelona sale a las nueve de la mañana.",
+                question: "¿A qué hora sale el tren?",
+                options: [
+                    "A) Las 8:00",
+                    "B) Las 9:00",
+                    "C) Las 10:00",
+                    "D) Las 11:00"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Me gusta el café con leche por la mañana, pero por la tarde prefiero té.",
+                question: "¿Qué prefiere la persona por la tarde?",
+                options: [
+                    "A) Café",
+                    "B) Leche",
+                    "C) Té",
+                    "D) Jugo"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "En mi ciudad, hay un parque grande donde la gente corre y juega.",
+                question: "¿Qué hacen las personas en el parque?",
+                options: [
+                    "A) Nadan y cantan",
+                    "B) Corren y juegan",
+                    "C) Bailan y leen",
+                    "D) Pintan y escriben"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy a la tienda de ropa para comprar un vestido rojo para la fiesta.",
+                question: "¿Qué quiere comprar la persona?",
+                options: [
+                    "A) Un vestido rojo",
+                    "B) Un traje azul",
+                    "C) Una camiseta verde",
+                    "D) Unos zapatos negros"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "Mi madre trabaja en un hospital como enfermera.",
+                question: "¿Dónde trabaja la madre de la persona?",
+                options: [
+                    "A) En una escuela",
+                    "B) En un hospital",
+                    "C) En una oficina",
+                    "D) En una tienda"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "El restaurante está abierto de lunes a sábado, pero cierra los domingos.",
+                question: "¿Qué día cierra el restaurante?",
+                options: [
+                    "A) Lunes",
+                    "B) Miércoles",
+                    "C) Sábado",
+                    "D) Domingo"
+                ],
+                correctAnswer: 3
+            },
+            {
+                textToSpeak: "Voy al gimnasio tres veces por semana para hacer ejercicio.",
+                question: "¿Cuántas veces por semana va la persona al gimnasio?",
+                options: [
+                    "A) Una",
+                    "B) Dos",
+                    "C) Tres",
+                    "D) Cuatro"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Mi mejor amigo vive en Sevilla, pero yo vivo en Madrid.",
+                question: "¿Dónde vive el mejor amigo de la persona?",
+                options: [
+                    "A) Madrid",
+                    "B) Sevilla",
+                    "C) Barcelona",
+                    "D) Valencia"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "En la escuela, estudiamos matemáticas, español y ciencias.",
+                question: "¿Qué estudian en la escuela?",
+                options: [
+                    "A) Matemáticas, español y ciencias",
+                    "B) Arte, música y deportes",
+                    "C) Historia, geografía y literatura",
+                    "D) Inglés, francés y alemán"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "La película empieza a las ocho de la noche y termina a las diez.",
+                question: "¿A qué hora empieza la película?",
+                options: [
+                    "A) Las 6:00",
+                    "B) Las 7:00",
+                    "C) Las 8:00",
+                    "D) Las 9:00"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Mi comida favorita es la paella porque es deliciosa.",
+                question: "¿Cuál es la comida favorita de la persona?",
+                options: [
+                    "A) Pizza",
+                    "B) Hamburguesa",
+                    "C) Paella",
+                    "D) Tacos"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Voy a la farmacia porque necesito comprar medicinas para el resfriado.",
+                question: "¿Por qué va la persona a la farmacia?",
+                options: [
+                    "A) Para comprar comida",
+                    "B) Para comprar medicinas",
+                    "C) Para comprar ropa",
+                    "D) Para comprar libros"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "En mi familia, somos cinco personas: mis padres, mi hermano, mi hermana y yo.",
+                question: "¿Cuántas personas hay en la familia?",
+                options: [
+                    "A) Tres",
+                    "B) Cuatro",
+                    "C) Cinco",
+                    "D) Seis"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Voy al mercado todos los sábados para comprar verduras frescas.",
+                question: "¿Qué día va la persona al mercado?",
+                options: [
+                    "A) Lunes",
+                    "B) Miércoles",
+                    "C) Viernes",
+                    "D) Sábado"
+                ],
+                correctAnswer: 3
+            },
+            {
+                textToSpeak: "Mi deporte favorito es el fútbol porque es muy emocionante.",
+                question: "¿Cuál es el deporte favorito de la persona?",
+                options: [
+                    "A) Baloncesto",
+                    "B) Fútbol",
+                    "C) Tenis",
+                    "D) Natación"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy a la estación de tren para tomar el tren de las cinco de la tarde.",
+                question: "¿A qué hora sale el tren?",
+                options: [
+                    "A) Las 3:00",
+                    "B) Las 4:00",
+                    "C) Las 5:00",
+                    "D) Las 6:00"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "En la tienda, compro una camiseta blanca y un pantalón negro.",
+                question: "¿Qué colores tienen la camiseta y el pantalón?",
+                options: [
+                    "A) Blanco y negro",
+                    "B) Rojo y azul",
+                    "C) Verde y amarillo",
+                    "D) Rosa y gris"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "Voy al parque para pasear a mi perro todas las tardes.",
+                question: "¿Por qué va la persona al parque?",
+                options: [
+                    "A) Para leer un libro",
+                    "B) Para pasear a su perro",
+                    "C) Para jugar al fútbol",
+                    "D) Para comer"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Mi hermana tiene un examen importante mañana por la mañana.",
+                question: "¿Cuándo tiene el examen la hermana de la persona?",
+                options: [
+                    "A) Hoy por la tarde",
+                    "B) Mañana por la mañana",
+                    "C) Mañana por la tarde",
+                    "D) Pasado mañana"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "En la cafetería, pido un café con leche y un croissant.",
+                question: "¿Qué pide la persona en la cafetería?",
+                options: [
+                    "A) Té y galletas",
+                    "B) Café con leche y un croissant",
+                    "C) Jugo y un sándwich",
+                    "D) Agua y un pastel"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy a la playa porque hace mucho calor y quiero nadar.",
+                question: "¿Por qué va la persona a la playa?",
+                options: [
+                    "A) Porque hace frío",
+                    "B) Porque quiere leer",
+                    "C) Porque hace calor y quiere nadar",
+                    "D) Porque quiere caminar"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Mi padre trabaja en una oficina de nueve de la mañana a cinco de la tarde.",
+                question: "¿A qué hora termina de trabajar el padre de la persona?",
+                options: [
+                    "A) Las 3:00",
+                    "B) Las 4:00",
+                    "C) Las 5:00",
+                    "D) Las 6:00"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "En la librería, compro un libro de aventuras y un cuaderno.",
+                question: "¿Qué tipo de libro compra la persona?",
+                options: [
+                    "A) Aventuras",
+                    "B) Romance",
+                    "C) Ciencia ficción",
+                    "D) Historia"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "Voy al dentista porque me duele un diente.",
+                question: "¿Por qué va la persona al dentista?",
+                options: [
+                    "A) Para un chequeo general",
+                    "B) Porque le duele un diente",
+                    "C) Para una limpieza",
+                    "D) Para un tratamiento de ortodoncia"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "En la escuela, tenemos clase de matemáticas a las diez de la mañana.",
+                question: "¿A qué hora es la clase de matemáticas?",
+                options: [
+                    "A) Las 8:00",
+                    "B) Las 9:00",
+                    "C) Las 10:00",
+                    "D) Las 11:00"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Voy a la panadería para comprar pan fresco y un pastel de chocolate.",
+                question: "¿Qué compra la persona en la panadería?",
+                options: [
+                    "A) Pan fresco y un pastel de chocolate",
+                    "B) Galletas y un café",
+                    "C) Pan integral y un jugo",
+                    "D) Donas y un té"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "Mi hermano juega al baloncesto todos los jueves por la tarde.",
+                question: "¿Qué día juega al baloncesto el hermano de la persona?",
+                options: [
+                    "A) Lunes",
+                    "B) Martes",
+                    "C) Miércoles",
+                    "D) Jueves"
+                ],
+                correctAnswer: 3
+            },
+            {
+                textToSpeak: "En la tienda de deportes, compro una pelota de fútbol y un par de zapatillas.",
+                question: "¿Qué compra la persona en la tienda de deportes?",
+                options: [
+                    "A) Una raqueta y una pelota de tenis",
+                    "B) Una pelota de fútbol y un par de zapatillas",
+                    "C) Un balón de baloncesto y una camiseta",
+                    "D) Una bicicleta y un casco"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy al zoológico para ver a los animales, especialmente a los elefantes.",
+                question: "¿Qué animales quiere ver especialmente la persona?",
+                options: [
+                    "A) Leones",
+                    "B) Tigres",
+                    "C) Elefantes",
+                    "D) Monos"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "En la estación de autobuses, compro un boleto a Valencia para el viernes.",
+                question: "¿A dónde va la persona?",
+                options: [
+                    "A) Madrid",
+                    "B) Barcelona",
+                    "C) Sevilla",
+                    "D) Valencia"
+                ],
+                correctAnswer: 3
+            },
+            {
+                textToSpeak: "Mi bebida favorita es el jugo de naranja porque es refrescante.",
+                question: "¿Cuál es la bebida favorita de la persona?",
+                options: [
+                    "A) Agua",
+                    "B) Café",
+                    "C) Jugo de naranja",
+                    "D) Té"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Voy al parque de atracciones para subir a la montaña rusa.",
+                question: "¿Por qué va la persona al parque de atracciones?",
+                options: [
+                    "A) Para comer algodón de azúcar",
+                    "B) Para subir a la montaña rusa",
+                    "C) Para ver un espectáculo",
+                    "D) Para jugar en los videojuegos"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "En la biblioteca, pido un libro sobre la historia de España.",
+                question: "¿Qué tipo de libro pide la persona?",
+                options: [
+                    "A) Historia",
+                    "B) Ciencia",
+                    "C) Literatura",
+                    "D) Matemáticas"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "Voy al supermercado para comprar leche, pan y huevos.",
+                question: "¿Qué compra la persona en el supermercado?",
+                options: [
+                    "A) Leche, pan y huevos",
+                    "B) Fruta, café y azúcar",
+                    "C) Carne, arroz y pasta",
+                    "D) Galletas, jugo y cereal"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "Mi hermana trabaja en una tienda de ropa los fines de semana.",
+                question: "¿Cuándo trabaja la hermana de la persona?",
+                options: [
+                    "A) Entre semana",
+                    "B) Los fines de semana",
+                    "C) Solo los viernes",
+                    "D) Solo los lunes"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy al cine con mis amigos para ver una película de acción.",
+                question: "¿Con quién va la persona al cine?",
+                options: [
+                    "A) Con su familia",
+                    "B) Con sus amigos",
+                    "C) Solo",
+                    "D) Con su hermano"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "En la tienda de electrónica, compro un teléfono móvil y unos auriculares.",
+                question: "¿Qué compra la persona en la tienda de electrónica?",
+                options: [
+                    "A) Un televisor y un reproductor de DVD",
+                    "B) Un teléfono móvil y unos auriculares",
+                    "C) Una computadora y un ratón",
+                    "D) Una cámara y un trípode"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy al médico porque tengo fiebre y dolor de garganta.",
+                question: "¿Por qué va la persona al médico?",
+                options: [
+                    "A) Para un chequeo general",
+                    "B) Porque tiene fiebre y dolor de garganta",
+                    "C) Para una vacunación",
+                    "D) Para un examen de la vista"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "En la escuela, tenemos clase de español a las once de la mañana.",
+                question: "¿A qué hora es la clase de español?",
+                options: [
+                    "A) Las 9:00",
+                    "B) Las 10:00",
+                    "C) Las 11:00",
+                    "D) Las 12:00"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Voy a la playa con mi familia para pasar el día nadando y jugando en la arena.",
+                question: "¿Con quién va la persona a la playa?",
+                options: [
+                    "A) Con sus amigos",
+                    "B) Con su familia",
+                    "C) Solo",
+                    "D) Con su hermano"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "En la tienda de deportes, compro un balón de baloncesto y una camiseta.",
+                question: "¿Qué deporte practica la persona, según el audio?",
+                options: [
+                    "A) Fútbol",
+                    "B) Baloncesto",
+                    "C) Tenis",
+                    "D) Natación"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy al mercado para comprar pescado fresco y verduras para la cena.",
+                question: "¿Qué compra la persona para la cena?",
+                options: [
+                    "A) Pan y queso",
+                    "B) Pescado fresco y verduras",
+                    "C) Carne y arroz",
+                    "D) Fruta y jugo"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Mi hermano mayor trabaja en un banco en el centro de la ciudad.",
+                question: "¿Dónde trabaja el hermano mayor de la persona?",
+                options: [
+                    "A) En una escuela",
+                    "B) En un hospital",
+                    "C) En un banco",
+                    "D) En una tienda"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Voy a la estación de autobuses para tomar el autobús de las seis de la tarde.",
+                question: "¿A qué hora sale el autobús?",
+                options: [
+                    "A) Las 4:00",
+                    "B) Las 5:00",
+                    "C) Las 6:00",
+                    "D) Las 7:00"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "En la cafetería, pido un té verde y un pastel de manzana.",
+                question: "¿Qué pide la persona en la cafetería?",
+                options: [
+                    "A) Café y un croissant",
+                    "B) Té verde y un pastel de manzana",
+                    "C) Jugo y un sándwich",
+                    "D) Agua y un pastel de chocolate"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy al gimnasio todos los días por la mañana para hacer ejercicio.",
+                question: "¿Cuándo va la persona al gimnasio?",
+                options: [
+                    "A) Por la mañana",
+                    "B) Por la tarde",
+                    "C) Por la noche",
+                    "D) Solo los fines de semana"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "En la tienda de ropa, compro un abrigo negro para el invierno.",
+                question: "¿Qué compra la persona para el invierno?",
+                options: [
+                    "A) Una camiseta",
+                    "B) Unos shorts",
+                    "C) Un abrigo negro",
+                    "D) Un vestido"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Mi hermana menor tiene diez años y va a la escuela primaria.",
+                question: "¿Cuántos años tiene la hermana menor de la persona?",
+                options: [
+                    "A) Ocho",
+                    "B) Nueve",
+                    "C) Diez",
+                    "D) Once"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Voy al cine para ver una película de ciencia ficción esta tarde.",
+                question: "¿Qué tipo de película va a ver la persona?",
+                options: [
+                    "A) Comedia",
+                    "B) Ciencia ficción",
+                    "C) Terror",
+                    "D) Drama"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "En la biblioteca, pido un libro de cocina para aprender nuevas recetas.",
+                question: "¿Qué tipo de libro pide la persona?",
+                options: [
+                    "A) Historia",
+                    "B) Ciencia",
+                    "C) Cocina",
+                    "D) Literatura"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Voy al parque para correr y hacer ejercicio al aire libre.",
+                question: "¿Por qué va la persona al parque?",
+                options: [
+                    "A) Para leer un libro",
+                    "B) Para pasear a su perro",
+                    "C) Para correr y hacer ejercicio",
+                    "D) Para comer"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "En la tienda de música, compro un CD de música clásica y un par de auriculares.",
+                question: "¿Qué tipo de música compra la persona?",
+                options: [
+                    "A) Rock",
+                    "B) Pop",
+                    "C) Música clásica",
+                    "D) Jazz"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Voy a la estación de tren para tomar el tren a Sevilla a las cuatro de la tarde.",
+                question: "¿A dónde va la persona?",
+                options: [
+                    "A) Madrid",
+                    "B) Barcelona",
+                    "C) Sevilla",
+                    "D) Valencia"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "En la farmacia, compro aspirinas y jarabe para la tos.",
+                question: "¿Qué compra la persona en la farmacia?",
+                options: [
+                    "A) Aspirinas y jarabe para la tos",
+                    "B) Vitaminas y crema",
+                    "C) Antibióticos y vendas",
+                    "D) Pastillas para dormir y té"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "Voy al zoológico con mi hermano para ver a los leones y los tigres.",
+                question: "¿Con quién va la persona al zoológico?",
+                options: [
+                    "A) Con sus amigos",
+                    "B) Con su familia",
+                    "C) Con su hermano",
+                    "D) Solo"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "En la tienda de juguetes, compro un rompecabezas y un coche de juguete.",
+                question: "¿Qué compra la persona en la tienda de juguetes?",
+                options: [
+                    "A) Un rompecabezas y un coche de juguete",
+                    "B) Una muñeca y un tren",
+                    "C) Un balón y un juego de mesa",
+                    "D) Un libro y un lápiz"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "Voy al parque de atracciones para subir a la noria y comer algodón de azúcar.",
+                question: "¿Qué quiere hacer la persona en el parque de atracciones?",
+                options: [
+                    "A) Subir a la montaña rusa y jugar videojuegos",
+                    "B) Subir a la noria y comer algodón de azúcar",
+                    "C) Ver un espectáculo y comer helado",
+                    "D) Correr y jugar al fútbol"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "En la escuela, tenemos clase de ciencias a las nueve de la mañana.",
+                question: "¿A qué hora es la clase de ciencias?",
+                options: [
+                    "A) Las 8:00",
+                    "B) Las 9:00",
+                    "C) Las 10:00",
+                    "D) Las 11:00"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy a la playa para nadar porque hace mucho calor hoy.",
+                question: "¿Por qué va la persona a la playa?",
+                options: [
+                    "A) Porque hace frío",
+                    "B) Porque quiere leer",
+                    "C) Porque hace calor y quiere nadar",
+                    "D) Porque quiere caminar"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "En la tienda de ropa, compro una chaqueta azul y una bufanda roja.",
+                question: "¿Qué colores tienen la chaqueta y la bufanda?",
+                options: [
+                    "A) Blanco y negro",
+                    "B) Rojo y azul",
+                    "C) Azul y rojo",
+                    "D) Verde y amarillo"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Voy al cine con mi hermana para ver una película de terror.",
+                question: "¿Qué tipo de película van a ver?",
+                options: [
+                    "A) Comedia",
+                    "B) Ciencia ficción",
+                    "C) Terror",
+                    "D) Drama"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "En la panadería, compro un pan integral y un pastel de fresa.",
+                question: "¿Qué compra la persona en la panadería?",
+                options: [
+                    "A) Pan integral y un pastel de fresa",
+                    "B) Galletas y un café",
+                    "C) Pan fresco y un jugo",
+                    "D) Donas y un té"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "Voy al gimnasio los lunes, miércoles y viernes por la tarde.",
+                question: "¿Cuántas veces por semana va la persona al gimnasio?",
+                options: [
+                    "A) Una",
+                    "B) Dos",
+                    "C) Tres",
+                    "D) Cuatro"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "En la librería, compro un libro de historia y un diccionario.",
+                question: "¿Qué tipo de libro compra la persona?",
+                options: [
+                    "A) Aventuras",
+                    "B) Historia",
+                    "C) Ciencia ficción",
+                    "D) Cocina"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy al mercado para comprar carne y arroz para la comida.",
+                question: "¿Qué compra la persona para la comida?",
+                options: [
+                    "A) Pan y queso",
+                    "B) Pescado y verduras",
+                    "C) Carne y arroz",
+                    "D) Fruta y jugo"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Mi padre trabaja en una fábrica de coches en las afueras de la ciudad.",
+                question: "¿Dónde trabaja el padre de la persona?",
+                options: [
+                    "A) En una escuela",
+                    "B) En un hospital",
+                    "C) En una fábrica de coches",
+                    "D) En una tienda"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Voy a la estación de tren para tomar el tren a Barcelona a las siete de la mañana.",
+                question: "¿A qué hora sale el tren?",
+                options: [
+                    "A) Las 6:00",
+                    "B) Las 7:00",
+                    "C) Las 8:00",
+                    "D) Las 9:00"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "En la cafetería, pido un café solo y un sándwich de jamón.",
+                question: "¿Qué pide la persona en la cafetería?",
+                options: [
+                    "A) Té y galletas",
+                    "B) Café solo y un sándwich de jamón",
+                    "C) Jugo y un pastel",
+                    "D) Agua y un croissant"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy al parque para leer un libro porque es un lugar tranquilo.",
+                question: "¿Por qué va la persona al parque?",
+                options: [
+                    "A) Para leer un libro",
+                    "B) Para pasear a su perro",
+                    "C) Para correr y hacer ejercicio",
+                    "D) Para jugar al fútbol"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "En la tienda de ropa, compro un traje negro para una boda.",
+                question: "¿Para qué compra la persona un traje negro?",
+                options: [
+                    "A) Para el trabajo",
+                    "B) Para una boda",
+                    "C) Para una fiesta",
+                    "D) Para el gimnasio"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Mi hermano menor tiene ocho años y va a la escuela primaria.",
+                question: "¿Cuántos años tiene el hermano menor de la persona?",
+                options: [
+                    "A) Seis",
+                    "B) Siete",
+                    "C) Ocho",
+                    "D) Nueve"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Voy al cine para ver una película de drama esta noche.",
+                question: "¿Qué tipo de película va a ver la persona?",
+                options: [
+                    "A) Comedia",
+                    "B) Ciencia ficción",
+                    "C) Terror",
+                    "D) Drama"
+                ],
+                correctAnswer: 3
+            },
+            {
+                textToSpeak: "En la biblioteca, pido un libro de ciencia para un proyecto escolar.",
+                question: "¿Qué tipo de libro pide la persona?",
+                options: [
+                    "A) Historia",
+                    "B) Ciencia",
+                    "C) Cocina",
+                    "D) Literatura"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy al parque para jugar al fútbol con mis amigos.",
+                question: "¿Por qué va la persona al parque?",
+                options: [
+                    "A) Para leer un libro",
+                    "B) Para pasear a su perro",
+                    "C) Para correr y hacer ejercicio",
+                    "D) Para jugar al fútbol"
+                ],
+                correctAnswer: 3
+            },
+            {
+                textToSpeak: "En la tienda de música, compro un CD de música pop y un par de altavoces.",
+                question: "¿Qué tipo de música compra la persona?",
+                options: [
+                    "A) Rock",
+                    "B) Pop",
+                    "C) Música clásica",
+                    "D) Jazz"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy a la estación de tren para tomar el tren a Madrid a las ocho de la mañana.",
+                question: "¿A dónde va la persona?",
+                options: [
+                    "A) Madrid",
+                    "B) Barcelona",
+                    "C) Sevilla",
+                    "D) Valencia"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "En la farmacia, compro vitaminas y crema para la piel.",
+                question: "¿Qué compra la persona en la farmacia?",
+                options: [
+                    "A) Aspirinas y jarabe para la tos",
+                    "B) Vitaminas y crema",
+                    "C) Antibióticos y vendas",
+                    "D) Pastillas para dormir y té"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy al zoológico con mi familia para ver a los monos y los osos.",
+                question: "¿Qué animales quiere ver la persona?",
+                options: [
+                    "A) Leones y tigres",
+                    "B) Elefantes y jirafas",
+                    "C) Monos y osos",
+                    "D) Cocodrilos y serpientes"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "En la tienda de flores, compro un ramo de rosas rojas para mi madre.",
+                question: "¿Qué compra la persona en la tienda de flores?",
+                options: [
+                    "A) Un ramo de tulipanes amarillos",
+                    "B) Un ramo de rosas rojas",
+                    "C) Un ramo de margaritas blancas",
+                    "D) Un ramo de lirios morados"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy al teatro para ver una obra de comedia esta noche.",
+                question: "¿Qué tipo de obra va a ver la persona?",
+                options: [
+                    "A) Drama",
+                    "B) Comedia",
+                    "C) Musical",
+                    "D) Suspense"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "En la tienda de animales, compro comida para peces y un hueso para mi perro.",
+                question: "¿Para qué animales compra comida la persona?",
+                options: [
+                    "A) Gatos y pájaros",
+                    "B) Peces y perros",
+                    "C) Conejos y hamsters",
+                    "D) Tortugas y serpientes"
+                ],
+                correctAnswer: 1
+            },
+            {
+                textToSpeak: "Voy a la estación de autobuses para tomar el autobús a Granada a las dos de la tarde.",
+                question: "¿A qué hora sale el autobús?",
+                options: [
+                    "A) Las 12:00",
+                    "B) Las 1:00",
+                    "C) Las 2:00",
+                    "D) Las 3:00"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "En la tienda de ropa, compro un cinturón marrón y unos calcetines negros.",
+                question: "¿Qué colores tienen el cinturón y los calcetines?",
+                options: [
+                    "A) Marrón y negro",
+                    "B) Azul y blanco",
+                    "C) Rojo y verde",
+                    "D) Amarillo y gris"
+                ],
+                correctAnswer: 0
+            },
+            {
+                textToSpeak: "Voy al parque para hacer un picnic con mi familia este domingo.",
+                question: "¿Qué va a hacer la persona en el parque?",
+                options: [
+                    "A) Correr y hacer ejercicio",
+                    "B) Leer un libro",
+                    "C) Hacer un picnic",
+                    "D) Pasear a su perro"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "En la librería, compro un libro de poesía y una agenda para el próximo año.",
+                question: "¿Qué tipo de libro compra la persona?",
+                options: [
+                    "A) Historia",
+                    "B) Cocina",
+                    "C) Poesía",
+                    "D) Ciencia"
+                ],
+                correctAnswer: 2
+            },
+            {
+                textToSpeak: "Voy al supermercado para comprar pasta, salsa de tomate y queso para la cena.",
+                question: "¿Qué compra la persona para la cena?",
+                options: [
+                    "A) Pan, leche y huevos",
+                    "B) Pasta, salsa de tomate y queso",
+                    "C) Carne, arroz y verduras",
+                    "D) Fruta, café y azúcar"
+                ],
+                correctAnswer: 1
+            }
+        ];
+
+        let userAnswers = new Array(questions.length).fill(null);
+
+        function speakText(text) {
+            // Cancel any ongoing speech
+            window.speechSynthesis.cancel();
+
+            // Create a new SpeechSynthesisUtterance
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            // Set the language to Spanish
+            utterance.lang = 'es-ES';
+            
+            // Adjust the rate and pitch if needed (optional)
+            utterance.rate = 0.9; // Slightly slower for clarity
+            utterance.pitch = 1; // Normal pitch
+
+            // Speak the text
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function createQuiz() {
+            const quizDiv = document.getElementById('quiz');
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                
+                // Create a "Play Audio" button instead of an audio element
+                const playButton = document.createElement('button');
+                playButton.className = 'play-audio-btn';
+                playButton.textContent = 'Play Audio';
+                playButton.onclick = () => speakText(q.textToSpeak);
+                
+                const questionText = document.createElement('p');
+                questionText.textContent = `${index + 1}. ${q.question}`;
+                
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options';
+                
+                q.options.forEach((option, optIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.textContent = option;
+                    optionDiv.onclick = () => selectAnswer(index, optIndex, optionDiv);
+                    optionsDiv.appendChild(optionDiv);
+                });
+                
+                questionDiv.appendChild(playButton);
+                questionDiv.appendChild(questionText);
+                questionDiv.appendChild(optionsDiv);
+                quizDiv.appendChild(questionDiv);
+            });
+        }
+
+        function selectAnswer(questionIndex, optionIndex, element) {
+            userAnswers[questionIndex] = optionIndex;
+            const options = element.parentElement.children;
+            for (let opt of options) {
+                opt.style.backgroundColor = '#f9f9f9';
+            }
+            element.style.backgroundColor = '#e9e9e9';
+        }
+
+        function checkAnswers() {
+            let score = 0;
+            const questionDivs = document.getElementsByClassName('question');
+            
+            questions.forEach((q, index) => {
+                const options = questionDivs[index].getElementsByClassName('option');
+                if (userAnswers[index] === q.correctAnswer) {
+                    score++;
+                    options[userAnswers[index]].classList.add('correct');
+                } else if (userAnswers[index] !== null) {
+                    options[userAnswers[index]].classList.add('incorrect');
+                    options[q.correctAnswer].classList.add('correct');
+                }
+            });
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `Tu puntuación: ${score} de ${questions.length}`;
+            document.getElementById('submit-btn').disabled = true;
+        }
+
+        document.getElementById('submit-btn').addEventListener('click', checkAnswers);
+        window.onload = createQuiz;
+    </script>
+</body>
+</html>
